@@ -1,0 +1,78 @@
+{
+  "name": "@clipboard/app",
+  "version": "0.0.1",
+  "description": "Clipboard",
+  "keywords": [
+    "clipboard"
+  ],
+  "homepage": "https://hieudoanm.github.io/clipboard",
+  "bugs": {
+    "url": "https://github.com/hieudoanm/clipboard/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hieudoanm/clipboard.git"
+  },
+  "license": "GPL-3.0",
+  "author": "hieudoanm <hieumdoan@gmail.com> (https://hieudoanm.github.io)",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": "25.9.0"
+  },
+  "scripts": {
+    "lint": "eslint . --fix",
+    "format": "prettier --cache --write .",
+    "predev": "rimraf .next && kill-port 3000",
+    "dev": "next dev --turbopack",
+    "pretest": "jest --clearCache",
+    "test": "jest",
+    "prebuild": "rimraf .next ../../docs",
+    "build": "next build --turbopack",
+    "postbuild": "bash ./scripts/sh/post-build.sh",
+    "prestart": "kill-port 3000",
+    "start": "next start",
+    "tauri": "tauri",
+    "dev:desktop": "tauri dev",
+    "build:desktop": "tauri build"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.3.0",
+    "@capacitor/core": "8.3.0",
+    "@capacitor/ios": "8.3.0",
+    "@tauri-apps/api": "2.10.1",
+    "next": "16.2.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.3.0",
+    "@dotenvx/dotenvx": "1.59.1",
+    "@eslint/eslintrc": "3.3.5",
+    "@tailwindcss/postcss": "4.2.2",
+    "@tauri-apps/cli": "2.10.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/jest": "30.0.0",
+    "@types/node": "25.5.2",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "babel-plugin-react-compiler": "1.0.0",
+    "daisyui": "5.5.19",
+    "eslint": "10.2.0",
+    "eslint-config-next": "16.2.2",
+    "jest": "30.3.0",
+    "jest-environment-jsdom": "30.3.0",
+    "kill-port": "2.0.1",
+    "prettier": "3.8.1",
+    "prettier-plugin-tailwindcss": "0.7.2",
+    "prisma": "7.6.0",
+    "prisma-dbml-generator": "0.12.0",
+    "prisma-json-schema-generator": "5.1.5",
+    "rimraf": "6.1.3",
+    "tailwindcss": "4.2.2",
+    "ts-jest": "29.4.9",
+    "ts-node": "10.9.2",
+    "typescript": "6.0.2"
+  }
+}

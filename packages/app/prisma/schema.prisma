@@ -1,0 +1,22 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+}
+
+model Clip {
+  id        Int      @id @default(autoincrement()) @map("id")
+  content   String   @default("") @map("content")
+  source    String   @default("") @map("source")
+  createdAt DateTime @default(now()) @map("created_at")
+  pinned    Boolean  @default(false) @map("pinned")
+
+  @@index([pinned, createdAt])
+  @@map("clips")
+}
