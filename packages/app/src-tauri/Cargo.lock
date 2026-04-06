@@ -418,6 +418,7 @@ dependencies = [
 name = "clipboard"
 version = "0.0.1"
 dependencies = [
+ "dirs",
  "log",
  "rusqlite",
  "serde",

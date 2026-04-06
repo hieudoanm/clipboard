@@ -23,4 +23,5 @@ serde = { version = "=1.0.228", features = ["derive"] }
 log = "=0.4.29"
 tauri = { version = "=2.10.3", features = [] }
 tauri-plugin-log = "=2.8.0"
-rusqlite = "=0.39.0"
+rusqlite = { version = "=0.39.0" }
+dirs = { version = "=6.0.0" }

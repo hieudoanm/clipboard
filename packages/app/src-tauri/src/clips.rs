@@ -34,52 +34,85 @@ fn open_db() -> Result<Connection, String> {
     let path = db_path();
     Connection::open_with_flags(
         &path,
-        rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
+        rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY
+            | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX,
     )
     .map_err(|e| format!("Failed to open {:?}: {}", path, e))
 }
 
+fn query_clips(
+    conn: &Connection,
+    sql: &str,
+    params: impl rusqlite::Params,
+) -> Result<Vec<Clip>, String> {
+    let mut stmt = conn.prepare(sql).map_err(|e| e.to_string())?;
+
+    // 👇 Key fix: bind to variable so iterator drops before stmt
+    let rows = stmt
+        .query_map(params, map_row)
+        .map_err(|e| e.to_string())?
+        .filter_map(|r| r.ok())
+        .collect::<Vec<_>>();
+
+    Ok(rows)
+}
+
 #[tauri::command]
-pub fn get_clips(search: Option<String>, pinned_only: bool, limit: Option<i64>) -> Result<ClipsResult, String> {
+pub fn get_clips(
+    search: Option<String>,
+    pinned_only: bool,
+    limit: Option<i64>,
+) -> Result<ClipsResult, String> {
     let conn = open_db()?;
     let limit = limit.unwrap_or(100);
 
-    let mut clips = Vec::new();
-
     let rows: Vec<Clip> = if let Some(ref q) = search.filter(|s| !s.trim().is_empty()) {
         let pattern = format!("%{}%", q.trim());
-        let base = if pinned_only {
-            "SELECT id, content, source, created_at, pinned FROM clips WHERE content LIKE ?1 AND pinned = 1 ORDER BY pinned DESC, created_at DESC LIMIT ?2"
+
+        if pinned_only {
+            query_clips(
+                &conn,
+                "SELECT id, content, source, created_at, pinned
+                 FROM clips
+                 WHERE content LIKE ?1 AND pinned = 1
+                 ORDER BY pinned DESC, created_at DESC
+                 LIMIT ?2",
+                params![pattern, limit],
+            )?
         } else {
-            "SELECT id, content, source, created_at, pinned FROM clips WHERE content LIKE ?1 ORDER BY pinned DESC, created_at DESC LIMIT ?2"
-        };
-        let mut stmt = conn.prepare(base).map_err(|e| e.to_string())?;
-        stmt.query_map(params![pattern, limit], map_row)
-            .map_err(|e| e.to_string())?
-            .filter_map(|r| r.ok())
-            .collect()
+            query_clips(
+                &conn,
+                "SELECT id, content, source, created_at, pinned
+                 FROM clips
+                 WHERE content LIKE ?1
+                 ORDER BY pinned DESC, created_at DESC
+                 LIMIT ?2",
+                params![pattern, limit],
+            )?
+        }
     } else if pinned_only {
-        let mut stmt = conn
-            .prepare("SELECT id, content, source, created_at, pinned FROM clips WHERE pinned = 1 ORDER BY created_at DESC LIMIT ?1")
-            .map_err(|e| e.to_string())?;
-        stmt.query_map(params![limit], map_row)
-            .map_err(|e| e.to_string())?
-            .filter_map(|r| r.ok())
-            .collect()
+        query_clips(
+            &conn,
+            "SELECT id, content, source, created_at, pinned
+             FROM clips
+             WHERE pinned = 1
+             ORDER BY created_at DESC
+             LIMIT ?1",
+            params![limit],
+        )?
     } else {
-        let mut stmt = conn
-            .prepare("SELECT id, content, source, created_at, pinned FROM clips ORDER BY pinned DESC, created_at DESC LIMIT ?1")
-            .map_err(|e| e.to_string())?;
-        stmt.query_map(params![limit], map_row)
-            .map_err(|e| e.to_string())?
-            .filter_map(|r| r.ok())
-            .collect()
+        query_clips(
+            &conn,
+            "SELECT id, content, source, created_at, pinned
+             FROM clips
+             ORDER BY pinned DESC, created_at DESC
+             LIMIT ?1",
+            params![limit],
+        )?
     };
 
-    clips.extend(rows);
-
     Ok(ClipsResult {
-        clips,
+        clips: rows,
         db_path: db_path().to_string_lossy().into_owned(),
     })
 }
