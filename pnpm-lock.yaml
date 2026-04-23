@@ -43,8 +43,8 @@ importers:
         specifier: 8.3.1
         version: 8.3.1
       '@dotenvx/dotenvx':
-        specifier: 1.61.4
-        version: 1.61.4
+        specifier: 1.61.5
+        version: 1.61.5
       '@eslint/eslintrc':
         specifier: 3.3.5
         version: 3.3.5
@@ -369,8 +369,8 @@ packages:
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
     engines: {node: '>=18'}
 
-  '@dotenvx/dotenvx@1.61.4':
-    resolution: {integrity: sha512-g6QvAdXmSKMxmF1oFeCcDwklB5/fmkRXzApL3q2n20Z7YXUzDvFZg1ItTsXdX9g5hTyEKjmcOPJON37O5TiDew==}
+  '@dotenvx/dotenvx@1.61.5':
+    resolution: {integrity: sha512-DysyULN/STdycYnyoKIe4y0QjRutWp/EDlCwpyUvq2dknjZV8TkKsLM7QXTjf31eV4Ak7GDG5JQ2e5CvrmJsog==}
     hasBin: true
 
   '@ecies/ciphers@0.2.6':
@@ -4905,7 +4905,7 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
-  '@dotenvx/dotenvx@1.61.4':
+  '@dotenvx/dotenvx@1.61.5':
     dependencies:
       commander: 11.1.0
       dotenv: 17.4.0
