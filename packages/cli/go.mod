@@ -3,7 +3,7 @@ module github.com/hieudoanm/clipboard
 go 1.26.2
 
 require (
-	github.com/mattn/go-sqlite3 v1.14.42
+	github.com/mattn/go-sqlite3 v1.14.44
 	github.com/spf13/cobra v1.10.2
 )
 
